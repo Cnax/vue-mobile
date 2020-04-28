@@ -8,6 +8,7 @@
         below
       </p>
       <van-button type="primary">Button</van-button>
+      <van-icon name="chat-o" />
     </div>
     <HelloWorld msg="Welcome to Your Vue.js App" />
   </div>
