@@ -1,4 +1,5 @@
 'use strict'
+const SkeletonWebpackPlugin = require('vue-skeleton-webpack-plugin')
 const path = require('path')
 
 function resolve(dir) {
@@ -6,9 +7,15 @@ function resolve(dir) {
 }
 const name = 'vue mobile'
 const IS_PROD = ["production", "prod"].includes(process.env.NODE_ENV)
+const IS_DEV = ["development", "dev"].includes(process.env.NODE_ENV)
 const port = process.env.port || 9527 // dev port
 
 module.exports = {
+  publicPath: '/',
+  outputDir: 'dist',
+  assetsDir: 'static',
+  lintOnSave: IS_DEV,
+  productionSourceMap: false,
   devServer: {
     port: port,
     open: true,
@@ -19,14 +26,31 @@ module.exports = {
   },
   configureWebpack: config => {
     config.name = name
-    config.resolve = {
-      alias: {
-        '@': resolve('src')
-      }
-    }
+    config.plugins.push(
+      new SkeletonWebpackPlugin({
+        webpackConfig: {
+          entry: {
+            app: resolve('./src/skeleton/entrySkeleton.js'),
+          },
+        },
+        minimize: true,
+        quiet: true,
+        router: {
+          routes: [
+            { path: '/', skeletonId: 'main-skeleton' }
+          ],
+        }
+      })
+    )
+  },
+  chainWebpack: config => {
+    // 移除 prefetch 插件
+    config.plugins.delete('prefetch')
+    // 移除 preload 插件
+    config.plugins.delete('preload')
     if (IS_PROD) {
-      config.optimization = {
-        splitChunks: {
+      config.optimization
+        .splitChunks({
           cacheGroups: {
             common: {
               name: "chunk-common",
@@ -50,7 +74,7 @@ module.exports = {
               name: "chunk-vant",
               test: /[\\/]node_modules[\\/]vant[\\/]/,
               chunks: "all",
-              priority: 3,
+              priority: 5,
               reuseExistingChunk: true,
               enforce: true
             },
@@ -63,13 +87,8 @@ module.exports = {
               enforce: true
             }
           }
-        }
-      }
-    }
-  },
-  chainWebpack: config => {
-    if (IS_PROD) {
-      config.optimization.delete("splitChunks")
+        })
+      config.optimization.runtimeChunk('single')
     }
     return config
   }

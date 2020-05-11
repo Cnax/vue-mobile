@@ -1,5 +1,5 @@
 {
-  "name": "vue-mobile2",
+  "name": "vue-mobile",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -33,6 +33,7 @@
     "less-loader": "^5.0.0",
     "postcss-px-to-viewport": "^1.1.1",
     "vue-cli-plugin-vant": "^1.0.1",
+    "vue-skeleton-webpack-plugin": "^1.2.2",
     "vue-template-compiler": "^2.6.11"
   }
 }
