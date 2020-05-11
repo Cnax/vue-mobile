@@ -1,6 +1,6 @@
 # vue-mobile
 
-## 项目依赖安装
+### 项目依赖安装
 ```
 npm install
 ```
